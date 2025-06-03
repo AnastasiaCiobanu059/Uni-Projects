@@ -34,10 +34,9 @@ Business Intelligence I and II
 Data-Driven Decision-making
 And other core Business Intelligence disciplines
 
-💡 Purpose of This Repository
+💡 **Purpose of This Repository**
 This repository serves as both a learning archive and a professional portfolio, with the following goals:
 Demonstrate my academic and technical journey
-Share best practices in BI and Analytics
+Share all my projects in BI and Analytics
 Showcase my practical experience for future opportunities
 
-Commit new file
