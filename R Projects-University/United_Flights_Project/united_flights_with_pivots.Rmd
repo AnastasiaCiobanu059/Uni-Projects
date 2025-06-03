@@ -1,0 +1,145 @@
+
+---
+title: "United Flights — Final Analysis"
+author: "Anastasia Nica"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+## 📦 Load Libraries
+```{r libraries}
+if(!require("tidyverse")) install.packages("tidyverse")
+if(!require("GGally")) install.packages("GGally")
+if(!require("corrplot")) install.packages("corrplot")
+if(!require("rpart")) install.packages("rpart")
+if(!require("rpart.plot")) install.packages("rpart.plot")
+if(!require("randomForest")) install.packages("randomForest")
+if(!require("lubridate")) install.packages("lubridate")
+if(!require("pivottabler")) install.packages("pivottabler")
+library(tidyverse)
+library(GGally)
+library(corrplot)
+library(rpart)
+library(rpart.plot)
+library(randomForest)
+library(lubridate)
+library(pivottabler)
+```
+
+## 📂 Load and Prepare Data
+```{r load}
+df <- read.csv("United flights.csv")
+names(df) <- tolower(names(df))
+```
+
+## ✂️ Clean and Feature Engineering
+```{r transform}
+df <- df %>%
+  mutate(
+    cancelled = factor(cancelled, levels = c(0,1), labels = c("No", "Yes")),
+    rain_origin = factor(ifelse(rain_at_origin == 1, "Rain", "No Rain")),
+    rain_dest = factor(ifelse(rain_at_dest == 1, "Rain", "No Rain")),
+    incentive = factor(ifelse(incentive_pay == 1, "Yes", "No")),
+    date = make_date(year, month, day_of_month),
+    total_delay = departure_delay + arrival_delay,
+    net_delay = arrival_delay - departure_delay,
+    delay_class = factor(ifelse(arrival_delay > 15, "Delayed", "OnTime")),
+    flight_route = paste(origin, "→", destination),
+    delay_impact = round(arrival_delay / time_in_air, 2),
+    long_flight = ifelse(time_in_air > 120, "Yes", "No")
+  ) %>%
+  filter(!is.na(arrival_delay), !is.na(departure_delay), cancelled == "No")
+```
+
+## 📊 Correlation Matrix
+```{r corrplot}
+corr_data <- df %>%
+  select(departure_delay, arrival_delay, total_delay, net_delay, time_in_air)
+corrplot(cor(corr_data), method = "color", addCoef.col = "black")
+```
+
+## 🔁 Pairwise Relationships
+```{r ggpairs}
+GGally::ggpairs(corr_data)
+```
+
+## 📈 Boxplot of Net Delay by Origin
+```{r boxplot-netdelay}
+ggplot(df, aes(x = origin, y = net_delay, fill = origin)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(title = "Boxplot of Net Delay by Origin", x = "Origin Airport", y = "Net Delay (min)")
+```
+
+## 📊 Pivot Table: Mean Net Delay
+```{r pivot-delay}
+p <- PivotTable$new()
+p$addData(df)
+p$addColumnDataGroups("origin")
+p$addRowDataGroups("destination")
+p$defineCalculation(calculationName="Mean Net Delay", summariseExpression="mean(net_delay, na.rm=TRUE)")
+p$evaluatePivot()
+p$renderPivot()
+```
+
+## 📈 Average Delay by Rain at Origin
+```{r rain-delay}
+df %>%
+  group_by(rain_origin) %>%
+  summarise(mean_arrival = mean(arrival_delay), count = n()) %>%
+  ggplot(aes(x = rain_origin, y = mean_arrival, fill = rain_origin)) +
+  geom_col() +
+  labs(title = "Average Arrival Delay by Rain at Origin") +
+  theme_minimal()
+```
+
+## 📍 Boxplot of Arrival Delay by Airline
+```{r box-airline}
+ggplot(df, aes(x = airline, y = arrival_delay, fill = airline)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(title = "Arrival Delay Distribution by Airline")
+```
+
+## 🌍 Top 10 Most Delayed Routes
+```{r top-routes}
+df %>%
+  group_by(flight_route) %>%
+  summarise(mean_arrival = mean(arrival_delay), count = n()) %>%
+  filter(count >= 10) %>%
+  arrange(desc(mean_arrival)) %>%
+  slice_head(n = 10) %>%
+  ggplot(aes(x = reorder(flight_route, mean_arrival), y = mean_arrival, fill = flight_route)) +
+  geom_col() +
+  coord_flip() +
+  labs(title = "Top 10 Most Delayed Routes", x = "Route", y = "Avg Arrival Delay") +
+  theme_minimal()
+```
+
+## 🧠 Decision Tree Model
+```{r decision-tree}
+set.seed(123)
+model_tree <- rpart(delay_class ~ departure_delay + time_in_air + rain_origin + incentive, data = df, method = "class")
+rpart.plot(model_tree, main = "Decision Tree")
+```
+
+## 🌲 Random Forest Model
+```{r random-forest}
+set.seed(456)
+model_rf <- randomForest(delay_class ~ departure_delay + time_in_air + rain_origin + incentive, data = df)
+print(model_rf)
+```
+
+## 🧪 Model Performance
+```{r model-performance}
+predict_rf <- predict(model_rf, df, type = "class")
+table(Actual = df$delay_class, Predicted = predict_rf)
+```
