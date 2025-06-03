@@ -14,49 +14,28 @@ Each folder is clearly organized using the name of the tool or technology follow
 
 🔧 Tools and Technologies Covered:
 Power BI
-
 Tableau
-
 Advanced Excel
-
 Python
-
 R
-
 SQL
-
 SAS
-
 SPSS
-
 RapidMiner
-
 and more...
 
 📚 Key Subjects:
-Data Mining
-
+Data Mining I and II
 Big Data Analytics
-
-Machine Learning
-
-Business Process Management
-
 Data Visualization
-
 Data Warehousing
-
-Business Analytics
-
-Marketing Intelligence
-
+Digital Analytics
+Business Intelligence I and II
+Data-Driven Decision-making
 And other core Business Intelligence disciplines
 
 💡 Purpose of This Repository
 This repository serves as both a learning archive and a professional portfolio, with the following goals:
-
 Demonstrate my academic and technical journey
-
 Share best practices in BI and Analytics
-
 Showcase my practical experience for future opportunities
