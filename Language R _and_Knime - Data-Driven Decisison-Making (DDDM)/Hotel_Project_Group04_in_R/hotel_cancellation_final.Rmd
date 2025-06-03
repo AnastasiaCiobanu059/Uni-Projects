@@ -1,0 +1,440 @@
+---
+title: "Hotel Booking Cancellation Prediction"
+author: "Anastasia Nica"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+---
+
+## Load Libraries
+```{r libraries}
+```
+
+
+```{r libraries}
+# Automatically install and load packages if not already installed
+required_packages <- c("tidyverse", "GGally", "corrplot", "rpart", "rpart.plot", 
+                       "randomForest", "lubridate", "pivottabler", "kableExtra", 
+                       "magrittr", "caret", "xgboost", "pROC", "psych", "MASS", "scales")
+
+for(pkg in required_packages) {
+  if (!require(pkg, character.only = TRUE)) {
+    install.packages(pkg)
+    library(pkg, character.only = TRUE)
+  }
+}
+
+```
+
+## Load and Prepare Data
+```{r load}
+hotels <- read.csv("DDDM24_Hotel_Data.csv")
+# View the structure of hotels
+str(hotels)
+```
+```{r}
+# -----------------------
+# 2. Data Exploration
+# -----------------------
+
+# View basic structure and dimensions of the dataset
+dim(hotels)              # Number of rows and columns
+names(hotels)            # Names of all variables
+str(hotels)              # Structure and data types of each column
+
+# Summary statistics for each variable
+summary(hotels)
+
+# Check the number of missing values per column
+colSums(is.na(hotels))
+
+# Optional: check classes of each variable
+sapply(hotels, class)
+
+# Make sure required libraries are loaded
+library(knitr)
+library(kableExtra)
+
+# # view the first few rows
+knitr::kable(head(hotels, n = 10), format = "html", caption = "First 10 rows of the hotels dataset") %>%
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed")) %>%
+  column_spec(1:ncol(hotels), extra_css = "text-align: center;")
+
+```
+
+
+
+```{r}
+colnames(hotels)
+```
+
+```{r}
+# -----------------------
+# 2. Data Engineering
+# -----------------------
+
+library(dplyr)
+
+hotels <- hotels %>%
+  mutate( 
+    ArrivalDate = as.Date(ArrivalDate),
+
+    # Extract year and day
+    ArrivalDateYear = format(ArrivalDate, "%Y"),
+    ArrivalDateDayOfMonth = format(ArrivalDate, "%d"),
+
+    # Total nights
+    TotalNights = StaysInWeekendNights + StaysInWeekNights,
+
+    # Weekend stay ratio
+    IsWeekendStayRatio = ifelse(TotalNights > 0, StaysInWeekendNights / TotalNights, 0),
+
+    # Cancellation ratio
+    PreviousCancellation = ifelse(
+      PreviousBookingsNotCanceled + PreviousCancellations > 0,
+      PreviousCancellations / (PreviousBookingsNotCanceled + PreviousCancellations),
+      0
+    ),
+
+    # Season based on month
+    Season = ifelse(ArrivalDateDayOfMonth %in% c("December", "January", "February"), "Winter",
+             ifelse(ArrivalDateDayOfMonth %in% c("March", "April", "May"), "Spring",
+             ifelse(ArrivalDateDayOfMonth %in% c("June", "July", "August"), "Summer", "Autumn"))),
+
+    # Parking flag
+    RequiredCarParkingSpacesFlag = ifelse(RequiredCarParkingSpaces > 0, "Yes", "No"),
+
+    # Country group
+    CountryGroup = case_when(
+      Country == "PRT" ~ "Portugal",
+      Country %in% c("ESP", "GBR", "FRA", "DEU", "ITA") ~ "TopMarket",
+      Country %in% c("USA", "BEL", "BRA", "CHE", "IRL", "NLD") ~ "MediumMarket",
+      Country %in% c("AUT", "CHN", "ISR", "SWE", "POL") ~ "LowMarket",
+      TRUE ~ "MinorMarket"
+    ),
+
+    # Special request flag
+    HadSpecialRequest = ifelse(TotalOfSpecialRequests > 0, "Yes", "No"),
+
+    # Agent known flag
+    AgentKnown = ifelse(is.na(Agent) | Agent == "NULL" | Agent == "", "No", "Yes")
+  )
+
+# Convert selected variables to factor
+factor_vars <- c(
+  "Meal", "Country", "MarketSegment", "DistributionChannel", "IsRepeatedGuest",
+  "PreviousCancellations", "PreviousBookingsNotCanceled", "ReservedRoomType",
+  "BookingChanges", "DepositType", "Agent", "Company", "CustomerType", "IsCanceled"
+)
+
+hotels[factor_vars] <- lapply(hotels[factor_vars], factor)
+
+```
+
+```{r}
+# -----------------------
+# 3. Data Visualization: Focus on IsCanceled
+# -----------------------
+
+# Load required library
+library(ggplot2)
+
+# 1. Booking cancellations percentage with labels
+cancel_counts <- table(hotels$IsCanceled)
+cancel_pct <- prop.table(cancel_counts) * 100
+cancel_df <- data.frame(
+  Status = factor(c("Not Canceled", "Canceled"), levels = c("Not Canceled", "Canceled")),
+  Percentage = as.numeric(cancel_pct)
+)
+
+p0 <- ggplot(cancel_df, aes(x = Status, y = Percentage, fill = Status)) +
+  geom_bar(stat = "identity", width = 0.6) +
+  geom_text(aes(label = sprintf("%.2f%%", Percentage)), vjust = -0.5, size = 5) +
+  scale_fill_manual(values = c("Not Canceled" = "#617CFF", "Canceled" = "#9DDB7D")) +
+  labs(title = "Booking Cancellation Percentages", x = "IsCanceled", y = "Percentage of Bookings%") +
+  theme_minimal()
+print(p0)
+
+ggsave("booking_cancellation_percentages.png", plot = p0, width = 8, height = 6)
+
+# 2. Lead time distribution by cancellation status
+p1 <- ggplot(hotels, aes(x = factor(IsCanceled, labels = c("Not Canceled", "Canceled")), y = LeadTime)) +
+  geom_boxplot(fill = "lightblue") +
+  labs(title = "Lead Time by Cancellation Status", x = "Cancellation Status", y = "Lead Time")
+print(p1)
+
+ggsave("lead_time_by_cancellation.png", plot = p1, width = 8, height = 5)
+
+# 3. Percentage of cancellations by deposit type with labels
+cancellation_deposit <- hotels %>%
+  group_by(DepositType, IsCanceled) %>%
+  summarise(Count = n(), .groups = 'drop') %>%
+  group_by(DepositType) %>%
+  mutate(Percentage = Count / sum(Count) * 100)
+
+p2 <- ggplot(cancellation_deposit, aes(x = DepositType, y = Percentage, fill = factor(IsCanceled))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = sprintf("%.2f%%", Percentage)), 
+            position = position_dodge(width = 0.9), vjust = -0.3, size = 4) +
+  labs(title = "Percentage of Cancellations by Deposit Type",
+       x = "Deposit Type", y = "% Cancelled") +
+  scale_fill_manual(values = c("0" = "#00BFC4", "1" = "#F8766D"),
+                    labels = c("Not Canceled", "Canceled"),
+                    name = "Status") +
+  theme_minimal()
+print(p2)
+
+ggsave("cancellation_by_deposit_type.png", plot = p2, width = 8, height = 5)
+
+# 4. Percentage of cancellations by season with labels
+hotels$Season <- with(hotels, ifelse(ArrivalDateMonth %in% c("December", "January", "February"), "Winter",
+                            ifelse(ArrivalDateMonth %in% c("March", "April", "May"), "Spring",
+                            ifelse(ArrivalDateMonth %in% c("June", "July", "August"), "Summer", "Autumn"))))
+
+cancellation_season <- hotels %>%
+  group_by(Season, IsCanceled) %>%
+  summarise(Count = n(), .groups = 'drop') %>%
+  group_by(Season) %>%
+  mutate(Percentage = Count / sum(Count) * 100)
+
+p3 <- ggplot(cancellation_season, aes(x = Season, y = Percentage, fill = factor(IsCanceled))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = sprintf("%.2f%%", Percentage)), 
+            position = position_dodge(width = 0.9), vjust = -0.3, size = 4) +
+  labs(title = "Percentage of Cancellations by Season",
+       x = "Season", y = "% Cancelled") +
+  scale_fill_manual(values = c("0" = "#00BFC4", "1" = "#F8766D"),
+                    labels = c("Not Canceled", "Canceled"),
+                    name = "Status") +
+  theme_minimal()
+print(p3)
+
+ggsave("cancellation_by_season.png", plot = p3, width = 8, height = 5)
+
+# 5. Percentage of cancellations by customer type with labels
+cancellation_customer <- hotels %>%
+  group_by(CustomerType, IsCanceled) %>%
+  summarise(Count = n(), .groups = 'drop') %>%
+  group_by(CustomerType) %>%
+  mutate(Percentage = Count / sum(Count) * 100)
+
+p4 <- ggplot(cancellation_customer, aes(x = CustomerType, y = Percentage, fill = factor(IsCanceled))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = sprintf("%.2f%%", Percentage)), 
+            position = position_dodge(width = 0.9), vjust = -0.3, size = 4) +
+  labs(title = "Percentage of Cancellations by Customer Type",
+       x = "Customer Type", y = "% Cancelled") +
+  scale_fill_manual(values = c("0" = "#00BFC4", "1" = "#F8766D"),
+                    labels = c("Not Canceled", "Canceled"),
+                    name = "Status") +
+  theme_minimal()
+print(p4)
+
+ggsave("cancellation_by_customer_type.png", plot = p4, width = 8, height = 5)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+# Inspect unique values first
+unique(hotels$Meal)
+
+# Replace 'Undefined' or 'Undefined/SC' with 'SC'
+hotels$Meal <- as.character(hotels$Meal)  # Temporarily convert to character
+hotels$Meal[hotels$Meal == "Undefined" | hotels$Meal == "Undefined/SC"] <- "SC"
+hotels$Meal <- as.factor(hotels$Meal)  # Convert back to factor safely
+
+# Show summary statistics of the dataset
+summary(hotels)
+
+```
+
+```{r}
+#Missing Values and Outliers Treatment
+
+# Step 1: Replace missing values in key categorical and count variables
+hotels <- hotels %>%
+  mutate(
+    Children = ifelse(is.na(Children), 0, Children),
+    Country = ifelse(is.na(Country), "Unknown", Country),
+    Agent = ifelse(is.na(Agent) | Agent == "NULL" | Agent == "", "No", Agent),
+    Company = ifelse(is.na(Company) | Company == "NULL" | Company == "", "No", Company)
+  )
+
+# Step 2: Extract updated numeric columns (excluding BookingID)
+numeric_cols <- sapply(hotels, is.numeric)
+numeric_data <- hotels[, numeric_cols]
+numeric_data <- numeric_data[, !(names(numeric_data) %in% c("BookingID"))]
+
+# Step 3: Count outliers BEFORE treating them (for visualisation)
+count_outliers <- function(x) {
+  Q1 <- quantile(x, 0.25, na.rm = TRUE)
+  Q3 <- quantile(x, 0.75, na.rm = TRUE)
+  IQR <- Q3 - Q1
+  sum(x < (Q1 - 1.5 * IQR) | x > (Q3 + 1.5 * IQR), na.rm = TRUE)
+}
+
+outlier_counts <- sapply(numeric_data, count_outliers)
+outlier_df <- data.frame(
+  Variable = names(outlier_counts),
+  Outliers = as.numeric(outlier_counts)
+)
+
+# Step 4: Plot and save the outlier summary (for diagnosis only)
+library(ggplot2)
+p <- ggplot(outlier_df, aes(x = reorder(Variable, Outliers), y = Outliers)) +
+  geom_bar(stat = "identity", fill = "tomato") +
+  coord_flip() +
+  labs(title = "Outlier Count per Numeric Variable", x = "Variable", y = "Number of Outliers") +
+  theme_minimal()
+
+print(p)
+ggsave("outlier_summary_plot.png", plot = p, width = 10, height = 6)
+browseURL("outlier_summary_plot.png")
+
+# Step 5: Treat outliers by replacing them with NA (IQR method)
+clean_outliers_iqr <- function(vec, k = 1.5) {
+  Q1 <- quantile(vec, 0.25, na.rm = TRUE)
+  Q3 <- quantile(vec, 0.75, na.rm = TRUE)
+  IQR_value <- Q3 - Q1
+  lower <- Q1 - k * IQR_value
+  upper <- Q3 + k * IQR_value
+  vec_cleaned <- vec
+  vec_cleaned[vec < lower | vec > upper] <- NA
+  return(vec_cleaned)
+}
+
+# List of variables with many outliers to treat
+outlier_vars <- c("Adults", "BookingChanges", "ADR", "LeadTime", "DaysInWaitingList", 
+                  "StaysInWeekendNights", "StaysInWeekNights", "TotalNights",
+                  "Children", "Babies", "PreviousBookingsNotCanceled", "TotalOfSpecialRequests")
+
+# Apply the IQR cleaning
+for (var in outlier_vars) {
+  if (var %in% names(hotels)) {
+    hotels[[var]] <- clean_outliers_iqr(hotels[[var]])
+  }
+}
+
+# Step 6: Impute newly introduced NAs (from outliers) with median
+for (var in outlier_vars) {
+  if (var %in% names(hotels)) {
+    hotels[[var]][is.na(hotels[[var]])] <- median(hotels[[var]], na.rm = TRUE)
+  }
+}
+
+# Step 7: Final boxplot to visualise cleaned numeric variables
+numeric_cols <- sapply(hotels, is.numeric)
+numeric_data <- hotels[, numeric_cols]
+numeric_data <- numeric_data[, !(names(numeric_data) %in% c("BookingID"))]
+
+par(mar = c(12, 4, 4, 2) + 0.1, cex.axis = 0.7)
+boxplot(numeric_data, las = 2, main = "Boxplot of Numeric Variables After Outlier Treatment", col = "lightblue")
+
+# Save final boxplot
+png("boxplot_all_numeric_cleaned.png", width = 1200, height = 600)
+par(mar = c(12, 4, 4, 2) + 0.1, cex.axis = 0.7)
+boxplot(numeric_data, las = 2, main = "Boxplot of Numeric Variables After Outlier Treatment", col = "lightblue")
+dev.off()
+
+browseURL("boxplot_all_numeric_cleaned.png")
+
+# Final check: Show summary of missing values (should be all zeros)
+print(colSums(is.na(hotels)))
+
+```
+
+```{r}
+# -----------------------
+# EDA Part
+# -----------------------
+
+# Load required libraries
+library(psych)
+library(skimr)
+library(corrplot)
+
+# Step 1: Select and scale numeric variables only (excluding empty or constant columns)
+numeric_data <- hotels[, sapply(hotels, is.numeric)]
+
+# Remove columns with only NAs or constant values
+numeric_data <- numeric_data[, sapply(numeric_data, function(x) {
+  all(!is.na(x)) && length(unique(x)) > 1
+})]
+
+scaled_data <- scale(numeric_data)
+
+# Step 2: Display scaled histograms for numeric variables
+multi.hist(scaled_data,
+           freq = TRUE,
+           dcol = c("blue", "red"),
+           dlty = c("dotted", "solid"),
+           main = "Histograms of Scaled Numeric Variables")
+
+# Step 3: Save histogram plot as PNG
+png("multi_hist_scaled.png", width = 1200, height = 800)
+multi.hist(scaled_data,
+           freq = TRUE,
+           dcol = c("blue", "red"),
+           dlty = c("dotted", "solid"),
+           main = "Histograms of Scaled Numeric Variables")
+dev.off()
+browseURL("multi_hist_scaled.png")
+
+# Step 4: Summary statistics using skimr
+skimmed <- skim(hotels)
+print(skimmed)
+
+# Step 5: Save summary to text file
+sink("summary_statistics.txt")
+print(skimmed)
+sink()
+```
+
+
+```{r}
+# -----------------------------
+# Correlation Analysis Section
+# -----------------------------
+
+# Load required package
+library(corrplot)
+
+# Step 6: Correlation matrix of numeric variables
+cor_matrix <- cor(numeric_data, use = "pairwise.complete.obs")
+
+# Identify strong correlations (absolute > 0.7)
+strong_corr <- which(abs(cor_matrix) > 0.7 & abs(cor_matrix) < 1, arr.ind = TRUE)
+if (nrow(strong_corr) > 0) {
+  cat("\nStrong correlations (>|0.7|):\n")
+  for (i in seq_len(nrow(strong_corr))) {
+    cat(rownames(cor_matrix)[strong_corr[i, 1]], " & ", colnames(cor_matrix)[strong_corr[i, 2]], ": ",
+        round(cor_matrix[strong_corr[i, 1], strong_corr[i, 2]], 2), "\n")
+  }
+} else {
+  cat("\nNo strong correlations above 0.7 found.\n")
+}
+
+# Save two-sided correlation matrix as PNG
+png("correlation_matrix_twosided.png", width = 1000, height = 800)
+corrplot(cor_matrix, method = "color", type = "full", tl.cex = 0.8, addCoef.col = "black")
+dev.off()
+
+# Display two-sided correlation matrix image inline
+knitr::include_graphics("correlation_matrix_twosided.png")
+
+```
+
+

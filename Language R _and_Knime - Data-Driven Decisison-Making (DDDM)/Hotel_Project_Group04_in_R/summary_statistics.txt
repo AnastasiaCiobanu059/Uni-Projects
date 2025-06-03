@@ -1,0 +1,11 @@
+── Data Summary ────────────────────────
+                           Values
+Name                       hotels
+Number of rows             72646 
+Number of columns          26    
+_______________________          
+Column type frequency:           
+  character                10    
+  numeric                  16    
+________________________         
+Group variables            None  
