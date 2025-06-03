@@ -2,6 +2,7 @@
 
 🎓 **Master’s Degree in Information Management – Business Intelligence**  
 Welcome to my academic and professional portfolio!  
+at **NOVA IMS – Information Management School** (Universidade Nova de Lisboa) 
 This repository showcases a collection of university projects developed during my Master’s studies at **NOVA IMS**, with a specialization in **Business Intelligence**.
 
 ---
