@@ -5,14 +5,12 @@ date: "`r Sys.Date()`"
 output:
   html_document:
     toc: true
-    toc_float: true
-    theme: readable
+    toc_depth: 2
+    number_sections: true
+    theme: flatly
 ---
 
 ## Load Libraries
-```{r libraries}
-```
-
 
 ```{r libraries}
 # Automatically install and load packages if not already installed
@@ -35,6 +33,7 @@ hotels <- read.csv("DDDM24_Hotel_Data.csv")
 # View the structure of hotels
 str(hotels)
 ```
+## Data Exploration
 ```{r}
 # -----------------------
 # 2. Data Exploration
@@ -65,15 +64,13 @@ knitr::kable(head(hotels, n = 10), format = "html", caption = "First 10 rows of 
 
 ```
 
-
-
 ```{r}
 colnames(hotels)
 ```
-
+## Data Engineering
 ```{r}
 # -----------------------
-# 2. Data Engineering
+# 3. Data Engineering
 # -----------------------
 
 library(dplyr)
@@ -84,7 +81,20 @@ library(kableExtra)  # Required for column_spec and kable_styling
 hotels <- hotels %>%
   mutate( 
     ArrivalDate = as.Date(ArrivalDate),
-
+    ArrivalDateMonth = format(ArrivalDate, "%B"),
+    ArrivalDateMonth = recode(ArrivalDateMonth,
+                              "janeiro" = "January",
+                              "fevereiro" = "February",
+                              "março" = "March",
+                              "abril" = "April",
+                              "maio" = "May",
+                              "junho" = "June",
+                              "julho" = "July",
+                              "agosto" = "August",
+                              "setembro" = "September",
+                              "outubro" = "October",
+                              "novembro" = "November",
+                              "dezembro" = "December"),
     ArrivalDateYear = format(ArrivalDate, "%Y"),
     ArrivalDateDayOfMonth = format(ArrivalDate, "%d"),
 
@@ -136,10 +146,10 @@ kable(head(hotels, 10), format = "html", caption = "First 10 rows of the hotels 
 
 ```
 
-
+## Data Visualization : Focus on IsCanceled
 ```{r}
 # -----------------------
-# 3. Data Visualization: Focus on IsCanceled
+# 4. Data Visualization: Focus on IsCanceled
 # -----------------------
 
 library(dplyr)
@@ -160,14 +170,14 @@ cancel_df <- data.frame(
 ggplot(cancel_df, aes(x = Status, y = Percentage, fill = Status)) +
   geom_bar(stat = "identity", width = 0.6) +
   geom_text(aes(label = sprintf("%.2f%%", Percentage)), vjust = -0.5, size = 5) +
-  scale_fill_manual(values = c("Not Canceled" = "#00BFC4", "Canceled" = "#F8766D")) +
+  scale_fill_manual(values = c("Not Canceled" = "#00BFC4", "Canceled" = "#fc9272")) +
   labs(title = "Booking Cancellation Percentages", x = "Cancellation Status", y = "Percentage of Bookings") +
   theme_minimal()
 
 # 2. Lead Time Distribution by Cancellation Status
 ggplot(hotels, aes(x = factor(IsCanceled, labels = c("Not Canceled", "Canceled")), y = LeadTime, fill = factor(IsCanceled))) +
   geom_boxplot() +
-  scale_fill_manual(values = c("0" = "#00BFC4", "1" = "#F8766D"),
+  scale_fill_manual(values = c("0" = "#00BFC4", "1" = "#fc9272"),
                     labels = c("Not Canceled", "Canceled")) +
   labs(title = "Lead Time Distribution by Cancellation Status", x = "Cancellation Status", y = "Lead Time (days)") +
   theme_minimal()
@@ -183,7 +193,7 @@ hotels %>%
   geom_text(aes(label = sprintf("%.2f%%", Percentage)),
             position = position_dodge(width = 0.9), vjust = -0.3, size = 4) +
   labs(title = "Percentage of Cancellations by Customer Type", x = "Customer Type", y = "% Cancelled") +
-  scale_fill_manual(values = c("0" = "#00BFC4", "1" = "#F8766D"),
+  scale_fill_manual(values = c("0" = "#00BFC4", "1" = "#fc9272"),
                     labels = c("Not Canceled", "Canceled"), name = "Status") +
   theme_minimal()
 
@@ -198,9 +208,102 @@ hotels %>%
   geom_text(aes(label = sprintf("%.2f%%", Percentage)),
             position = position_dodge(width = 0.9), vjust = -0.3, size = 4) +
   labs(title = "Percentage of Cancellations by Deposit Type", x = "Deposit Type", y = "% Cancelled") +
-  scale_fill_manual(values = c("0" = "#00BFC4", "1" = "#F8766D"),
+  scale_fill_manual(values = c("0" = "#00BFC4", "1" = "#fc9272"),
                     labels = c("Not Canceled", "Canceled"), name = "Status") +
   theme_minimal()
+
+```
+
+```{r}
+# Load required libraries
+library(tidyverse)
+library(forcats)
+
+# Ensure English month names and correct ordering
+Sys.setlocale("LC_TIME", "C")
+hotels <- hotels %>%
+  mutate(
+    ArrivalDate = as.Date(ArrivalDate),
+    ArrivalDateYear = format(ArrivalDate, "%Y"),
+    ArrivalDateMonth = format(ArrivalDate, "%B"),
+    ArrivalDateMonth = fct_relevel(ArrivalDateMonth,
+                                   "January", "February", "March", "April", "May", "June",
+                                   "July", "August", "September", "October", "November", "December")
+  )
+
+# Plot: Booking cancellations by month (with one row per year)
+ggplot(hotels, aes(x = ArrivalDateMonth, fill = factor(IsCanceled))) +
+  geom_bar(position = "dodge") +
+  facet_wrap(~ ArrivalDateYear, ncol = 1) +
+  coord_cartesian(ylim = c(0, 3000)) +
+  scale_y_continuous(name = "No. of Bookings", labels = scales::comma) +
+  xlab("Months") +
+  ggtitle("Booking Cancellations per Month by Year") +
+  labs(fill = "Cancelled (1 = Yes, 0 = No)") +
+  scale_fill_manual(values = c("0" = "#1f77b4", "1" = "#fc9272")) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    plot.title = element_text(size = 14, face = "bold"),
+    strip.text = element_text(size = 12)
+  )
+
+# Season_cancel_plot
+hotels <- hotels %>%
+  mutate(
+    Season = case_when(
+      ArrivalDateMonth %in% c("December", "January", "February") ~ "Winter",
+      ArrivalDateMonth %in% c("March", "April", "May") ~ "Spring",
+      ArrivalDateMonth %in% c("June", "July", "August") ~ "Summer",
+      ArrivalDateMonth %in% c("September", "October", "November") ~ "Autumn"
+    ),
+    Season = factor(Season, levels = c("Winter", "Spring", "Summer", "Autumn"))
+  )
+
+season_summary <- hotels %>%
+  group_by(ArrivalDateYear, Season, IsCanceled) %>%
+  summarise(Bookings = n(), .groups = "drop")
+
+ggplot(season_summary, aes(x = Season, y = Bookings, fill = factor(IsCanceled))) +
+  geom_col(position = position_dodge(width = 0.9)) +
+  geom_text(aes(label = scales::comma(Bookings)),
+            position = position_dodge(width = 0.9),
+            vjust = -0.5, size = 3) +
+  facet_wrap(~ ArrivalDateYear, ncol = 1) +
+  coord_cartesian(ylim = c(0, 8000)) +
+  scale_y_continuous(name = "No. of Bookings", labels = scales::comma) +
+  xlab("Season") +
+  ggtitle("Booking Cancellations by Season and Year") +
+  labs(fill = "Cancelled (1 = Yes, 0 = No)") +
+  scale_fill_manual(values = c("0" = "#1f77b4", "1" = "#fc9272")) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold"),
+    strip.text = element_text(size = 12)
+  )
+
+# Cancellations of Bookings Across Years
+year_summary <- hotels %>%
+  group_by(ArrivalDateYear, IsCanceled) %>%
+  summarise(Bookings = n(), .groups = "drop")
+
+ggplot(year_summary, aes(x = ArrivalDateYear, y = Bookings, fill = factor(IsCanceled))) +
+  geom_col(position = position_dodge(width = 0.9)) +
+  geom_text(aes(label = scales::comma(Bookings)),
+            position = position_dodge(width = 0.9),
+            vjust = -0.5, size = 3) +
+  scale_y_continuous(name = "No. of Bookings", labels = scales::comma) +
+  xlab("Years") +
+  ggtitle("Booking Cancellations by Year") +
+  labs(fill = "Cancelled (1 = Yes, 0 = No)") +
+  scale_fill_manual(values = c("0" = "#1f77b4", "1" = "#fc9272")) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold")
+  )
+
 
 ```
 
@@ -223,10 +326,37 @@ summary(hotels)
 
 ```
 
+## Boxplot before outlier treatment
+```{r}
+# -----------------------
+# Boxplot before outlier treatment
+# -----------------------
+# This helps visualise which variables have extreme values
+
+# Select only numeric columns and drop BookingID if present
+numeric_cols <- sapply(hotels, is.numeric)
+numeric_data <- hotels[, numeric_cols]
+if ("BookingID" %in% names(numeric_data)) {
+  numeric_data <- numeric_data[, !(names(numeric_data) == "BookingID")]
+}
+
+# Show plot
+par(mar = c(12, 4, 4, 2) + 0.1, cex.axis = 0.7)
+boxplot(numeric_data, las = 2, main = "Boxplot of Numeric Variables Before Outlier Treatment", col = "#fc9272")
+
+# Save as PNG
+png("boxplot_before_outlier_treatment.png", width = 1200, height = 600)
+par(mar = c(12, 4, 4, 2) + 0.1, cex.axis = 0.7)
+boxplot(numeric_data, las = 2, main = "Boxplot of Numeric Variables Before Outlier Treatment", col = "#fc9272")
+dev.off()
+
+```
+
+### Full Missing Values and Outliers Treatment
 ```{r}
 
 # -----------------------
-# Full Missing Values and Outliers Treatment (Clean Version)
+# Full Missing Values and Outliers Treatment
 # -----------------------
 
 library(dplyr)
@@ -242,8 +372,7 @@ hotels <- hotels %>%
   )
 
 # Step 2: Extract numeric columns only (safely exclude BookingID if present)
-numeric_cols <- sapply(hotels, is.numeric)
-numeric_data <- hotels[, numeric_cols]
+numeric_data <- hotels %>% select_if(is.numeric)
 if ("BookingID" %in% names(numeric_data)) {
   numeric_data <- numeric_data[, !(names(numeric_data) == "BookingID")]
 }
@@ -262,16 +391,13 @@ outlier_df <- data.frame(
   Outliers = as.numeric(outlier_counts)
 )
 
-# Step 4: Plot and save outlier summary
-p <- ggplot(outlier_df, aes(x = reorder(Variable, Outliers), y = Outliers)) +
+# Step 4: Plot outlier summary (BookingID excluded)
+library(ggplot2)
+ggplot(outlier_df, aes(x = reorder(Variable, Outliers), y = Outliers)) +
   geom_bar(stat = "identity", fill = "tomato") +
   coord_flip() +
   labs(title = "Outlier Count per Numeric Variable", x = "Variable", y = "Number of Outliers") +
   theme_minimal()
-
-print(p)
-ggsave("outlier_summary_plot.png", plot = p, width = 10, height = 6)
-browseURL("outlier_summary_plot.png")
 
 # Step 5: Define safe outlier cleaning function
 clean_outliers_iqr <- function(vec, k = 1.5) {
@@ -304,24 +430,20 @@ for (var in outlier_vars) {
 }
 
 # Step 8: Final boxplot of cleaned data
-numeric_cols <- sapply(hotels, is.numeric)
-numeric_data <- hotels[, numeric_cols]
+numeric_data <- hotels %>% select_if(is.numeric)
 if ("BookingID" %in% names(numeric_data)) {
   numeric_data <- numeric_data[, !(names(numeric_data) == "BookingID")]
 }
 
-png("boxplot_all_numeric_cleaned.png", width = 1200, height = 600)
-par(mar = c(12, 4, 4, 2) + 0.1, cex.axis = 0.7)
 boxplot(numeric_data, las = 2, main = "Boxplot of Numeric Variables After Outlier Treatment", col = "lightblue")
-dev.off()
-browseURL("boxplot_all_numeric_cleaned.png")
 
 # Step 9: Final missing value check
 na_summary <- colSums(is.na(hotels))
 print(na_summary)
-if (all(na_summary == 0)) message("✅ No missing values remain in the dataset.")
-```
+if (all(na_summary == 0)) message("\u2705 No missing values remain in the dataset.")
 
+```
+## Exploratory Data Analysis (EDA)
 ```{r}
 # -----------------------
 # EDA Part
@@ -349,27 +471,13 @@ multi.hist(scaled_data,
            dlty = c("dotted", "solid"),
            main = "Histograms of Scaled Numeric Variables")
 
-# Step 3: Save histogram plot as PNG
-png("multi_hist_scaled.png", width = 1200, height = 800)
-multi.hist(scaled_data,
-           freq = TRUE,
-           dcol = c("blue", "red"),
-           dlty = c("dotted", "solid"),
-           main = "Histograms of Scaled Numeric Variables")
-dev.off()
-browseURL("multi_hist_scaled.png")
-
 # Step 4: Summary statistics using skimr
 skimmed <- skim(hotels)
 print(skimmed)
 
-# Step 5: Save summary to text file
-sink("summary_statistics.txt")
-print(skimmed)
-sink()
 ```
 
-
+## Correlation Analysis
 ```{r}
 # -----------------------------
 # Correlation Analysis Section
