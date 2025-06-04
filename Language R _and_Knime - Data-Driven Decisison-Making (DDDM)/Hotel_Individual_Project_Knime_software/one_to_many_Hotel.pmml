@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PMML version="4.2" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header copyright="Iacob Ciobanu">
+    <Application name="KNIME" version="5.4.3"/>
+  </Header>
+  <DataDictionary numberOfFields="12">
+    <DataField name="LeadTime" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="629.0"/>
+    </DataField>
+    <DataField name="StaysInWeekendNights" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="16.0"/>
+    </DataField>
+    <DataField name="StaysInWeekNights" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="41.0"/>
+    </DataField>
+    <DataField name="Adults" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="4.0"/>
+    </DataField>
+    <DataField name="Children" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="3.0"/>
+    </DataField>
+    <DataField name="PreviousCancellations" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="21.0"/>
+    </DataField>
+    <DataField name="PreviousBookingsNotCanceled" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="67.0"/>
+    </DataField>
+    <DataField name="BookingChanges" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="21.0"/>
+    </DataField>
+    <DataField name="ADR" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="5400.0"/>
+    </DataField>
+    <DataField name="IsCanceled" optype="categorical" dataType="string">
+      <Value value="0"/>
+      <Value value="1"/>
+    </DataField>
+    <DataField name="IsWeekendStayRatio" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="1.0"/>
+    </DataField>
+    <DataField name="PreviousCancellations (#1)" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="1.0"/>
+    </DataField>
+  </DataDictionary>
+  <TransformationDictionary>
+    <DerivedField name="HB_Meal" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Meal" value="HB" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="BB_Meal" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Meal" value="BB" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="SC_Meal" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Meal" value="SC" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="FB_Meal" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Meal" value="FB" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Offline TA/TO_MarketSegment" optype="ordinal" dataType="integer">
+      <NormDiscrete field="MarketSegment" value="Offline TA/TO" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Online TA_MarketSegment" optype="ordinal" dataType="integer">
+      <NormDiscrete field="MarketSegment" value="Online TA" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Groups_MarketSegment" optype="ordinal" dataType="integer">
+      <NormDiscrete field="MarketSegment" value="Groups" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Direct_MarketSegment" optype="ordinal" dataType="integer">
+      <NormDiscrete field="MarketSegment" value="Direct" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Complementary_MarketSegment" optype="ordinal" dataType="integer">
+      <NormDiscrete field="MarketSegment" value="Complementary" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Corporate_MarketSegment" optype="ordinal" dataType="integer">
+      <NormDiscrete field="MarketSegment" value="Corporate" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Undefined_MarketSegment" optype="ordinal" dataType="integer">
+      <NormDiscrete field="MarketSegment" value="Undefined" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Aviation_MarketSegment" optype="ordinal" dataType="integer">
+      <NormDiscrete field="MarketSegment" value="Aviation" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="A_ReservedRoomType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="ReservedRoomType" value="A" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="B_ReservedRoomType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="ReservedRoomType" value="B" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="D_ReservedRoomType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="ReservedRoomType" value="D" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="F_ReservedRoomType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="ReservedRoomType" value="F" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="E_ReservedRoomType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="ReservedRoomType" value="E" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="G_ReservedRoomType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="ReservedRoomType" value="G" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="C_ReservedRoomType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="ReservedRoomType" value="C" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="P_ReservedRoomType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="ReservedRoomType" value="P" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="No Deposit_DepositType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="DepositType" value="No Deposit" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Non Refund_DepositType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="DepositType" value="Non Refund" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Refundable_DepositType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="DepositType" value="Refundable" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Yes_Agent" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Agent" value="Yes" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Transient_CustomerType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="CustomerType" value="Transient" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Transient-Party_CustomerType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="CustomerType" value="Transient-Party" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Contract_CustomerType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="CustomerType" value="Contract" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Group_CustomerType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="CustomerType" value="Group" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="No_RequiredCarParkingSpaces" optype="ordinal" dataType="integer">
+      <NormDiscrete field="RequiredCarParkingSpaces" value="No" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Yes_RequiredCarParkingSpaces" optype="ordinal" dataType="integer">
+      <NormDiscrete field="RequiredCarParkingSpaces" value="Yes" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="July_Month (Name)" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Month (Name)" value="July" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="August_Month (Name)" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Month (Name)" value="August" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="September_Month (Name)" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Month (Name)" value="September" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="October_Month (Name)" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Month (Name)" value="October" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="November_Month (Name)" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Month (Name)" value="November" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="December_Month (Name)" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Month (Name)" value="December" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="January_Month (Name)" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Month (Name)" value="January" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="February_Month (Name)" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Month (Name)" value="February" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="March_Month (Name)" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Month (Name)" value="March" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="April_Month (Name)" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Month (Name)" value="April" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="May_Month (Name)" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Month (Name)" value="May" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="June_Month (Name)" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Month (Name)" value="June" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Wednesday_Day of Week (Name)" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Day of Week (Name)" value="Wednesday" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Thursday_Day of Week (Name)" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Day of Week (Name)" value="Thursday" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Friday_Day of Week (Name)" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Day of Week (Name)" value="Friday" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Saturday_Day of Week (Name)" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Day of Week (Name)" value="Saturday" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Sunday_Day of Week (Name)" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Day of Week (Name)" value="Sunday" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Monday_Day of Week (Name)" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Day of Week (Name)" value="Monday" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Tuesday_Day of Week (Name)" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Day of Week (Name)" value="Tuesday" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Portugal_CountryGroup" optype="ordinal" dataType="integer">
+      <NormDiscrete field="CountryGroup" value="Portugal" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="TopMarket_CountryGroup" optype="ordinal" dataType="integer">
+      <NormDiscrete field="CountryGroup" value="TopMarket" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="MediumMarket_CountryGroup" optype="ordinal" dataType="integer">
+      <NormDiscrete field="CountryGroup" value="MediumMarket" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="MinorMarket_CountryGroup" optype="ordinal" dataType="integer">
+      <NormDiscrete field="CountryGroup" value="MinorMarket" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="LowMarket_CountryGroup" optype="ordinal" dataType="integer">
+      <NormDiscrete field="CountryGroup" value="LowMarket" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="No_HadSpecialRequest" optype="ordinal" dataType="integer">
+      <NormDiscrete field="HadSpecialRequest" value="No" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Yes_HadSpecialRequest" optype="ordinal" dataType="integer">
+      <NormDiscrete field="HadSpecialRequest" value="Yes" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="No_WasInWaitingList" optype="ordinal" dataType="integer">
+      <NormDiscrete field="WasInWaitingList" value="No" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Yes_WasInWaitingList" optype="ordinal" dataType="integer">
+      <NormDiscrete field="WasInWaitingList" value="Yes" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Summer_ArrivalSeason" optype="ordinal" dataType="integer">
+      <NormDiscrete field="ArrivalSeason" value="Summer" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Autumn_ArrivalSeason" optype="ordinal" dataType="integer">
+      <NormDiscrete field="ArrivalSeason" value="Autumn" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Winter_ArrivalSeason" optype="ordinal" dataType="integer">
+      <NormDiscrete field="ArrivalSeason" value="Winter" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Spring_ArrivalSeason" optype="ordinal" dataType="integer">
+      <NormDiscrete field="ArrivalSeason" value="Spring" mapMissingTo="0.0"/>
+    </DerivedField>
+  </TransformationDictionary>
+</PMML>
