@@ -3,7 +3,7 @@
   <Header copyright="Iacob Ciobanu">
     <Application name="KNIME" version="5.4.3"/>
   </Header>
-  <DataDictionary numberOfFields="12">
+  <DataDictionary numberOfFields="11">
     <DataField name="LeadTime" optype="continuous" dataType="integer">
       <Interval closure="closedClosed" leftMargin="0.0" rightMargin="629.0"/>
     </DataField>
@@ -19,8 +19,8 @@
     <DataField name="Children" optype="continuous" dataType="double">
       <Interval closure="closedClosed" leftMargin="0.0" rightMargin="3.0"/>
     </DataField>
-    <DataField name="PreviousCancellations" optype="continuous" dataType="integer">
-      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="21.0"/>
+    <DataField name="PreviousCancellations" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="1.0"/>
     </DataField>
     <DataField name="PreviousBookingsNotCanceled" optype="continuous" dataType="integer">
       <Interval closure="closedClosed" leftMargin="0.0" rightMargin="67.0"/>
@@ -36,9 +36,6 @@
       <Value value="1"/>
     </DataField>
     <DataField name="IsWeekendStayRatio" optype="continuous" dataType="double">
-      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="1.0"/>
-    </DataField>
-    <DataField name="PreviousCancellations (#1)" optype="continuous" dataType="double">
       <Interval closure="closedClosed" leftMargin="0.0" rightMargin="1.0"/>
     </DataField>
   </DataDictionary>

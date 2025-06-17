@@ -1,0 +1,700 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PMML version="4.2" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header copyright="Iacob Ciobanu">
+    <Application name="KNIME" version="5.4.3"/>
+  </Header>
+  <DataDictionary numberOfFields="28">
+    <DataField name="Id" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="1.0" rightMargin="1460.0"/>
+    </DataField>
+    <DataField name="MSSubClass" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="20.0" rightMargin="190.0"/>
+    </DataField>
+    <DataField name="LotFrontage" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="313.0"/>
+    </DataField>
+    <DataField name="LotArea" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="1300.0" rightMargin="215245.0"/>
+    </DataField>
+    <DataField name="OverallQual" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="1.0" rightMargin="10.0"/>
+    </DataField>
+    <DataField name="OverallCond" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="1.0" rightMargin="9.0"/>
+    </DataField>
+    <DataField name="MasVnrArea" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="1600.0"/>
+    </DataField>
+    <DataField name="BsmtUnfSF" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="2336.0"/>
+    </DataField>
+    <DataField name="GrLivArea" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="334.0" rightMargin="5642.0"/>
+    </DataField>
+    <DataField name="BedroomAbvGr" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="8.0"/>
+    </DataField>
+    <DataField name="Fireplaces" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="3.0"/>
+    </DataField>
+    <DataField name="GarageYrBlt" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="2010.0"/>
+    </DataField>
+    <DataField name="GarageCars" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="4.0"/>
+    </DataField>
+    <DataField name="WoodDeckSF" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="857.0"/>
+    </DataField>
+    <DataField name="SalePrice" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="34900.0" rightMargin="755000.0"/>
+    </DataField>
+    <DataField name="Age" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="136.0"/>
+    </DataField>
+    <DataField name="YearsSinceRemodel" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="-1.0" rightMargin="60.0"/>
+    </DataField>
+    <DataField name="TotalHouseSF" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="334.0" rightMargin="11752.0"/>
+    </DataField>
+    <DataField name="TotalBathrooms" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="1.0" rightMargin="6.0"/>
+    </DataField>
+    <DataField name="RoomDensity" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="0.0021269053527118043" rightMargin="0.008333333333333333"/>
+    </DataField>
+    <DataField name="TotalPorchSF" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="1027.0"/>
+    </DataField>
+    <DataField name="IsRemodeled" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="1.0"/>
+    </DataField>
+    <DataField name="HasGarage" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="1.0"/>
+    </DataField>
+    <DataField name="HasBasement" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="1.0"/>
+    </DataField>
+    <DataField name="HasPool" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="1.0"/>
+    </DataField>
+    <DataField name="HasFence" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="1.0"/>
+    </DataField>
+    <DataField name="HasAlley" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="0.0" rightMargin="1.0"/>
+    </DataField>
+    <DataField name="QualityIndex" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="8.0" rightMargin="40.0"/>
+    </DataField>
+  </DataDictionary>
+  <TransformationDictionary>
+    <DerivedField name="RL_MSZoning" optype="ordinal" dataType="integer">
+      <NormDiscrete field="MSZoning" value="RL" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="RM_MSZoning" optype="ordinal" dataType="integer">
+      <NormDiscrete field="MSZoning" value="RM" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="C (all)_MSZoning" optype="ordinal" dataType="integer">
+      <NormDiscrete field="MSZoning" value="C (all)" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="FV_MSZoning" optype="ordinal" dataType="integer">
+      <NormDiscrete field="MSZoning" value="FV" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="RH_MSZoning" optype="ordinal" dataType="integer">
+      <NormDiscrete field="MSZoning" value="RH" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Pave_Street" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Street" value="Pave" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Grvl_Street" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Street" value="Grvl" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Reg_LotShape" optype="ordinal" dataType="integer">
+      <NormDiscrete field="LotShape" value="Reg" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="IR1_LotShape" optype="ordinal" dataType="integer">
+      <NormDiscrete field="LotShape" value="IR1" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="IR2_LotShape" optype="ordinal" dataType="integer">
+      <NormDiscrete field="LotShape" value="IR2" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="IR3_LotShape" optype="ordinal" dataType="integer">
+      <NormDiscrete field="LotShape" value="IR3" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Lvl_LandContour" optype="ordinal" dataType="integer">
+      <NormDiscrete field="LandContour" value="Lvl" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Bnk_LandContour" optype="ordinal" dataType="integer">
+      <NormDiscrete field="LandContour" value="Bnk" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Low_LandContour" optype="ordinal" dataType="integer">
+      <NormDiscrete field="LandContour" value="Low" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="HLS_LandContour" optype="ordinal" dataType="integer">
+      <NormDiscrete field="LandContour" value="HLS" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="AllPub_Utilities" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Utilities" value="AllPub" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="NoSeWa_Utilities" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Utilities" value="NoSeWa" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Inside_LotConfig" optype="ordinal" dataType="integer">
+      <NormDiscrete field="LotConfig" value="Inside" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="FR2_LotConfig" optype="ordinal" dataType="integer">
+      <NormDiscrete field="LotConfig" value="FR2" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Corner_LotConfig" optype="ordinal" dataType="integer">
+      <NormDiscrete field="LotConfig" value="Corner" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="CulDSac_LotConfig" optype="ordinal" dataType="integer">
+      <NormDiscrete field="LotConfig" value="CulDSac" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="FR3_LotConfig" optype="ordinal" dataType="integer">
+      <NormDiscrete field="LotConfig" value="FR3" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Gtl_LandSlope" optype="ordinal" dataType="integer">
+      <NormDiscrete field="LandSlope" value="Gtl" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Mod_LandSlope" optype="ordinal" dataType="integer">
+      <NormDiscrete field="LandSlope" value="Mod" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Sev_LandSlope" optype="ordinal" dataType="integer">
+      <NormDiscrete field="LandSlope" value="Sev" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="CollgCr_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="CollgCr" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Veenker_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="Veenker" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Crawfor_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="Crawfor" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="NoRidge_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="NoRidge" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Mitchel_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="Mitchel" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Somerst_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="Somerst" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="NWAmes_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="NWAmes" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="OldTown_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="OldTown" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="BrkSide_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="BrkSide" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Sawyer_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="Sawyer" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="NridgHt_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="NridgHt" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="NAmes_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="NAmes" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="SawyerW_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="SawyerW" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="IDOTRR_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="IDOTRR" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="MeadowV_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="MeadowV" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Edwards_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="Edwards" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Timber_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="Timber" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Gilbert_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="Gilbert" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="StoneBr_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="StoneBr" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="ClearCr_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="ClearCr" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="NPkVill_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="NPkVill" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Blmngtn_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="Blmngtn" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="BrDale_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="BrDale" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="SWISU_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="SWISU" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Blueste_Neighborhood" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Neighborhood" value="Blueste" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Norm_Condition1" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Condition1" value="Norm" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Feedr_Condition1" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Condition1" value="Feedr" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="PosN_Condition1" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Condition1" value="PosN" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Artery_Condition1" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Condition1" value="Artery" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="RRAe_Condition1" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Condition1" value="RRAe" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="RRNn_Condition1" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Condition1" value="RRNn" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="RRAn_Condition1" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Condition1" value="RRAn" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="PosA_Condition1" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Condition1" value="PosA" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="RRNe_Condition1" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Condition1" value="RRNe" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Norm_Condition2" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Condition2" value="Norm" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Artery_Condition2" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Condition2" value="Artery" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="RRNn_Condition2" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Condition2" value="RRNn" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Feedr_Condition2" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Condition2" value="Feedr" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="PosN_Condition2" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Condition2" value="PosN" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="PosA_Condition2" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Condition2" value="PosA" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="RRAn_Condition2" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Condition2" value="RRAn" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="RRAe_Condition2" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Condition2" value="RRAe" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="1Fam_BldgType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BldgType" value="1Fam" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="2fmCon_BldgType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BldgType" value="2fmCon" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Duplex_BldgType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BldgType" value="Duplex" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="TwnhsE_BldgType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BldgType" value="TwnhsE" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Twnhs_BldgType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BldgType" value="Twnhs" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="2Story_HouseStyle" optype="ordinal" dataType="integer">
+      <NormDiscrete field="HouseStyle" value="2Story" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="1Story_HouseStyle" optype="ordinal" dataType="integer">
+      <NormDiscrete field="HouseStyle" value="1Story" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="1.5Fin_HouseStyle" optype="ordinal" dataType="integer">
+      <NormDiscrete field="HouseStyle" value="1.5Fin" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="1.5Unf_HouseStyle" optype="ordinal" dataType="integer">
+      <NormDiscrete field="HouseStyle" value="1.5Unf" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="SFoyer_HouseStyle" optype="ordinal" dataType="integer">
+      <NormDiscrete field="HouseStyle" value="SFoyer" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="SLvl_HouseStyle" optype="ordinal" dataType="integer">
+      <NormDiscrete field="HouseStyle" value="SLvl" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="2.5Unf_HouseStyle" optype="ordinal" dataType="integer">
+      <NormDiscrete field="HouseStyle" value="2.5Unf" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="2.5Fin_HouseStyle" optype="ordinal" dataType="integer">
+      <NormDiscrete field="HouseStyle" value="2.5Fin" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Gable_RoofStyle" optype="ordinal" dataType="integer">
+      <NormDiscrete field="RoofStyle" value="Gable" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Hip_RoofStyle" optype="ordinal" dataType="integer">
+      <NormDiscrete field="RoofStyle" value="Hip" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Gambrel_RoofStyle" optype="ordinal" dataType="integer">
+      <NormDiscrete field="RoofStyle" value="Gambrel" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Mansard_RoofStyle" optype="ordinal" dataType="integer">
+      <NormDiscrete field="RoofStyle" value="Mansard" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Flat_RoofStyle" optype="ordinal" dataType="integer">
+      <NormDiscrete field="RoofStyle" value="Flat" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Shed_RoofStyle" optype="ordinal" dataType="integer">
+      <NormDiscrete field="RoofStyle" value="Shed" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="CompShg_RoofMatl" optype="ordinal" dataType="integer">
+      <NormDiscrete field="RoofMatl" value="CompShg" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="WdShngl_RoofMatl" optype="ordinal" dataType="integer">
+      <NormDiscrete field="RoofMatl" value="WdShngl" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Metal_RoofMatl" optype="ordinal" dataType="integer">
+      <NormDiscrete field="RoofMatl" value="Metal" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="WdShake_RoofMatl" optype="ordinal" dataType="integer">
+      <NormDiscrete field="RoofMatl" value="WdShake" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Membran_RoofMatl" optype="ordinal" dataType="integer">
+      <NormDiscrete field="RoofMatl" value="Membran" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Tar&amp;Grv_RoofMatl" optype="ordinal" dataType="integer">
+      <NormDiscrete field="RoofMatl" value="Tar&amp;Grv" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Roll_RoofMatl" optype="ordinal" dataType="integer">
+      <NormDiscrete field="RoofMatl" value="Roll" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="ClyTile_RoofMatl" optype="ordinal" dataType="integer">
+      <NormDiscrete field="RoofMatl" value="ClyTile" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="VinylSd_Exterior1st" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior1st" value="VinylSd" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="MetalSd_Exterior1st" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior1st" value="MetalSd" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Wd Sdng_Exterior1st" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior1st" value="Wd Sdng" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="HdBoard_Exterior1st" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior1st" value="HdBoard" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="BrkFace_Exterior1st" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior1st" value="BrkFace" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="WdShing_Exterior1st" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior1st" value="WdShing" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="CemntBd_Exterior1st" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior1st" value="CemntBd" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Plywood_Exterior1st" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior1st" value="Plywood" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="AsbShng_Exterior1st" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior1st" value="AsbShng" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Stucco_Exterior1st" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior1st" value="Stucco" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="BrkComm_Exterior1st" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior1st" value="BrkComm" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="AsphShn_Exterior1st" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior1st" value="AsphShn" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Stone_Exterior1st" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior1st" value="Stone" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="ImStucc_Exterior1st" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior1st" value="ImStucc" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="CBlock_Exterior1st" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior1st" value="CBlock" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="VinylSd_Exterior2nd" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior2nd" value="VinylSd" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="MetalSd_Exterior2nd" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior2nd" value="MetalSd" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Wd Shng_Exterior2nd" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior2nd" value="Wd Shng" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="HdBoard_Exterior2nd" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior2nd" value="HdBoard" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Plywood_Exterior2nd" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior2nd" value="Plywood" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Wd Sdng_Exterior2nd" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior2nd" value="Wd Sdng" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="CmentBd_Exterior2nd" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior2nd" value="CmentBd" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="BrkFace_Exterior2nd" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior2nd" value="BrkFace" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Stucco_Exterior2nd" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior2nd" value="Stucco" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="AsbShng_Exterior2nd" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior2nd" value="AsbShng" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Brk Cmn_Exterior2nd" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior2nd" value="Brk Cmn" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="ImStucc_Exterior2nd" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior2nd" value="ImStucc" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="AsphShn_Exterior2nd" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior2nd" value="AsphShn" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Stone_Exterior2nd" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior2nd" value="Stone" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Other_Exterior2nd" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior2nd" value="Other" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="CBlock_Exterior2nd" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Exterior2nd" value="CBlock" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="BrkFace_MasVnrType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="MasVnrType" value="BrkFace" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="None_MasVnrType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="MasVnrType" value="None" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Stone_MasVnrType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="MasVnrType" value="Stone" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="BrkCmn_MasVnrType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="MasVnrType" value="BrkCmn" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="PConc_Foundation" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Foundation" value="PConc" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="CBlock_Foundation" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Foundation" value="CBlock" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="BrkTil_Foundation" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Foundation" value="BrkTil" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Wood_Foundation" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Foundation" value="Wood" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Slab_Foundation" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Foundation" value="Slab" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Stone_Foundation" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Foundation" value="Stone" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="No_BsmtExposure" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BsmtExposure" value="No" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Gd_BsmtExposure" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BsmtExposure" value="Gd" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Mn_BsmtExposure" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BsmtExposure" value="Mn" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Av_BsmtExposure" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BsmtExposure" value="Av" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="GLQ_BsmtFinType1" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BsmtFinType1" value="GLQ" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="ALQ_BsmtFinType1" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BsmtFinType1" value="ALQ" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Unf_BsmtFinType1" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BsmtFinType1" value="Unf" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Rec_BsmtFinType1" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BsmtFinType1" value="Rec" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="BLQ_BsmtFinType1" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BsmtFinType1" value="BLQ" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="LwQ_BsmtFinType1" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BsmtFinType1" value="LwQ" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Unf_BsmtFinType2" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BsmtFinType2" value="Unf" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="BLQ_BsmtFinType2" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BsmtFinType2" value="BLQ" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="ALQ_BsmtFinType2" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BsmtFinType2" value="ALQ" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Rec_BsmtFinType2" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BsmtFinType2" value="Rec" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="LwQ_BsmtFinType2" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BsmtFinType2" value="LwQ" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="GLQ_BsmtFinType2" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BsmtFinType2" value="GLQ" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="NA_BsmtFinType2" optype="ordinal" dataType="integer">
+      <NormDiscrete field="BsmtFinType2" value="NA" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="GasA_Heating" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Heating" value="GasA" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="GasW_Heating" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Heating" value="GasW" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Grav_Heating" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Heating" value="Grav" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Wall_Heating" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Heating" value="Wall" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="OthW_Heating" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Heating" value="OthW" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Floor_Heating" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Heating" value="Floor" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Y_CentralAir" optype="ordinal" dataType="integer">
+      <NormDiscrete field="CentralAir" value="Y" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="N_CentralAir" optype="ordinal" dataType="integer">
+      <NormDiscrete field="CentralAir" value="N" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="SBrkr_Electrical" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Electrical" value="SBrkr" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="FuseF_Electrical" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Electrical" value="FuseF" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="FuseA_Electrical" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Electrical" value="FuseA" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="FuseP_Electrical" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Electrical" value="FuseP" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Mix_Electrical" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Electrical" value="Mix" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Typ_Functional" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Functional" value="Typ" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Min1_Functional" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Functional" value="Min1" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Maj1_Functional" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Functional" value="Maj1" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Min2_Functional" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Functional" value="Min2" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Mod_Functional" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Functional" value="Mod" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Maj2_Functional" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Functional" value="Maj2" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Sev_Functional" optype="ordinal" dataType="integer">
+      <NormDiscrete field="Functional" value="Sev" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Attchd_GarageType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="GarageType" value="Attchd" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Detchd_GarageType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="GarageType" value="Detchd" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="BuiltIn_GarageType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="GarageType" value="BuiltIn" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="CarPort_GarageType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="GarageType" value="CarPort" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="NoGarage_GarageType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="GarageType" value="NoGarage" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Basment_GarageType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="GarageType" value="Basment" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="2Types_GarageType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="GarageType" value="2Types" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="RFn_GarageFinish" optype="ordinal" dataType="integer">
+      <NormDiscrete field="GarageFinish" value="RFn" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Unf_GarageFinish" optype="ordinal" dataType="integer">
+      <NormDiscrete field="GarageFinish" value="Unf" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Fin_GarageFinish" optype="ordinal" dataType="integer">
+      <NormDiscrete field="GarageFinish" value="Fin" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Y_PavedDrive" optype="ordinal" dataType="integer">
+      <NormDiscrete field="PavedDrive" value="Y" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="N_PavedDrive" optype="ordinal" dataType="integer">
+      <NormDiscrete field="PavedDrive" value="N" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="P_PavedDrive" optype="ordinal" dataType="integer">
+      <NormDiscrete field="PavedDrive" value="P" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="0_MiscFeature" optype="ordinal" dataType="integer">
+      <NormDiscrete field="MiscFeature" value="0" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="1_MiscFeature" optype="ordinal" dataType="integer">
+      <NormDiscrete field="MiscFeature" value="1" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="WD_SaleType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="SaleType" value="WD" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="New_SaleType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="SaleType" value="New" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="COD_SaleType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="SaleType" value="COD" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="ConLD_SaleType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="SaleType" value="ConLD" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="ConLI_SaleType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="SaleType" value="ConLI" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="CWD_SaleType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="SaleType" value="CWD" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="ConLw_SaleType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="SaleType" value="ConLw" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Con_SaleType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="SaleType" value="Con" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Oth_SaleType" optype="ordinal" dataType="integer">
+      <NormDiscrete field="SaleType" value="Oth" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Normal_SaleCondition" optype="ordinal" dataType="integer">
+      <NormDiscrete field="SaleCondition" value="Normal" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Abnorml_SaleCondition" optype="ordinal" dataType="integer">
+      <NormDiscrete field="SaleCondition" value="Abnorml" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Partial_SaleCondition" optype="ordinal" dataType="integer">
+      <NormDiscrete field="SaleCondition" value="Partial" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="AdjLand_SaleCondition" optype="ordinal" dataType="integer">
+      <NormDiscrete field="SaleCondition" value="AdjLand" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Alloca_SaleCondition" optype="ordinal" dataType="integer">
+      <NormDiscrete field="SaleCondition" value="Alloca" mapMissingTo="0.0"/>
+    </DerivedField>
+    <DerivedField name="Family_SaleCondition" optype="ordinal" dataType="integer">
+      <NormDiscrete field="SaleCondition" value="Family" mapMissingTo="0.0"/>
+    </DerivedField>
+  </TransformationDictionary>
+</PMML>
